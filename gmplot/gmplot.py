@@ -22,6 +22,7 @@ class GoogleMapPlotter(object):
         self.paths = []
         self.shapes = []
         self.points = []
+        self.markers = []
         self.heatmap_points = []
         self.radpoints = []
         self.gridsetting = None
@@ -51,6 +52,16 @@ class GoogleMapPlotter(object):
         color = self.color_dict.get(color, color)
         color = self.html_color_codes.get(color, color)
         self.points.append((lat, lng, color[1:], title))
+
+    def infoWindowMarker(self, lat, long, title, infoWindow=False, infoContent='No content'):
+        marker = {}
+        marker['lat'] = lat
+        marker['long'] = long
+        marker['title'] = title
+        marker['infoWindow'] = infoWindow
+        marker['infoContent'] = infoContent
+
+        self.markers.append(marker)
 
     def scatter(self, lats, lngs, color=None, size=None, marker=True, c=None, s=None, **kwargs):
         color = color or c
@@ -188,6 +199,7 @@ class GoogleMapPlotter(object):
         self.write_paths(f)
         self.write_shapes(f)
         self.write_heatmap(f)
+        self.write_markers(f)
         f.write('\t}\n')
         f.write('</script>\n')
         f.write('</head>\n')
@@ -298,6 +310,8 @@ class GoogleMapPlotter(object):
         for coordinate in path:
             f.write('new google.maps.LatLng(%f, %f),\n' %
                     (coordinate[0], coordinate[1]))
+            f.write('new google.maps.LatLng(%f, %f),\n' %
+                    (coordinate[0], coordinate[1]))
         f.write('];\n')
         f.write('\n')
 
@@ -358,6 +372,26 @@ class GoogleMapPlotter(object):
             f.write('});' + '\n')
             f.write('heatmap.setMap(map);' + '\n')
             f.write(settings_string)
+
+    def write_markers(self, f):
+        markerNumber = 0
+        for marker in self.markers:
+            f.write('var marker' + str(markerNumber) + ' = new google.maps.Marker({\n')
+            f.write('position: {lat: ' + str(marker['lat']) + ', lng: ' + str(marker['long']) + '},\n')
+            f.write('map: map,\n')
+            f.write('title: \'' + marker['title'] + '\'\n')
+            f.write('});')
+
+            if marker['infoWindow']:
+                f.write('var infoWindow' + str(markerNumber) + ' = new google.maps.InfoWindow({\n')
+                f.write('content: \'' + str(marker['infoContent']) + '\'\n')
+                f.write('});')
+
+                f.write('marker' + str(markerNumber) + '.addListener(\'click\', function() {\n')
+                f.write('infoWindow' + str(markerNumber) + '.open(map, marker' + str(markerNumber) + ');\n')
+                f.write('});')
+
+            markerNumber += 1
 
 if __name__ == "__main__":
 
