@@ -1,5 +1,7 @@
-gmplot
+derLorenz' Version of gmplot
 ======
+
+This library is needed to use my `PhotoMap <https://github.com/derlorenz/PhotoMap>`_  script written in Python.
 
 Plotting data on Google Maps, the easy way. A matplotlib-like
 interface to generate the HTML and javascript to render all the
@@ -36,19 +38,16 @@ Plot types
 ----------
 
 * Polygons with fills.
-* Drop pins.
 * Scatter points.
-* Grid lines.
 * Heatmaps.
+* Pins with Infowindows
 
 .. image:: http://i.imgur.com/dTNkbZ7.png
 
 Misc.
 -----
 
-Code hosted on `GitHub <https://github.com/vgm64/gmplot>`_
-
-Install easily with ``pip install gmplot`` from PyPI.
+Original Source Code hosted on `GitHub <https://github.com/vgm64/gmplot>`_
 
 Inspired by Yifei Jiang's (jiangyifei@gmail.com) pygmaps_ module.
 
